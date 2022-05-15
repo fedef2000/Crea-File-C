@@ -5,7 +5,7 @@
 #include<string.h>
 #include<stdbool.h>
 
-
+/*stringa che contiene il codice di un programma con una sola pipe*/
 char unaPipe[] =
 		"#include<stdlib.h>\n"
 		"#include<stdio.h>\n"
@@ -61,6 +61,8 @@ char unaPipe[] =
 		"	exit(0);\n"
 		"}";
 
+
+/*stringa che contiene il codice di un programma con n pipe*/
 char npipe[] =
 "#include <stdio.h>\n"
 "#include <stdlib.h>\n"
@@ -181,39 +183,39 @@ char npipe[] =
 
 
 int main(int argc, char **argv){
-
+	/*controllo che sia passato almeno un parametro: il nome del file*/
 	if(argc < 2){
-		printf("inserire il nome del file da creare\n");
+		printf("errore: numero di parametri non corretto, inserire il nome del file da creare senza l'estensione .c\n");
 		exit(1);
 	}
-	char files[5][25]; //massimo 5 file con nome di massimo 25 caratteri
-	bool n=false;
-	int nf = 0;
-
+	char files[5][25]; //array che contiene i nomi dei file da creare, massimo 5 file con nome di massimo 25 caratteri
+	bool n=false; //true se l'utente vuole creare i file con n-pipe, di default è false, cioè con solo una pipe
+	int nf = 0; //numero di file da creare
+	/*scorro tutti i parametri per controllare se c'è la flag -n che indica n pipe*/
 	for(int i = 1; i < argc; i++){
-		if(argv[i][0] == '-'){
+		if(argv[i][0] == '-'){ //se il parametro passato inizia con - allora è una flag, se no è un file da creare
 			if(argv[i][1] == 'n' || argv[i][1] == 'N'){
 				n = true;
 			}else{
-				printf("flag %c non valida\n", argv[i][1]);
+				printf("flag %c non valida\n", argv[i][1]); //se la flag è una lettera diversa da n non è corretta
 				exit(2);
 			}
 		}else
 		{
-			strncpy(files[nf], argv[i], strlen(argv[i]));
+			strncpy(files[nf], argv[i], strlen(argv[i])); //salvo il nome in un array e incrementro il numero di file da creare
 			nf++;
 		}
 	}
-
+	/*creo i file*/
 	for(int i = 0; i < nf; i++){
 		printf("creazione del file %s.c\n", files[i]);
 		char ex[] = ".c";
-		strncat(files[i], ex, 3);
+		strncat(files[i], ex, 3); //aggiungo l'estensione .c
 		int fd;
 		fd = creat(files[i], 0644);
 		if (fd <0){
 			printf("errore nella creazione\n");
-			exit(2);
+			exit(3);
 		}
 		printf("file %s creato\n", files[i]);
 
